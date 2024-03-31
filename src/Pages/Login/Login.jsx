@@ -7,7 +7,10 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {Link} from "react-router-dom";
+import MuiAlert from '@mui/material/Alert';
+import {Link, useNavigate} from "react-router-dom";
+import UserService from "../../service/UserService";
+import {Snackbar} from "@mui/material";
 
 function Copyright(props) {
     return (
@@ -23,14 +26,42 @@ function Copyright(props) {
 }
 
 export default function SignIn() {
-    const handleSubmit = (event) => {
+    const userService = new UserService()
+    const [open, setOpen] = React.useState(false);
+    const [message, setMessage] = React.useState('');
+    const navigate = useNavigate();
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            telephone: data.get('telephone'),
-            password: data.get('password'),
-        });
+        try {
+            const fetchData = async () => {
+                const resp = await userService.loginForAccessToken({login: data.get('telephone'), password: data.get('password')});
+                const token = resp.token
+                if (!token) {
+                    setMessage('Неверный логин или пароль');
+                    setOpen(true);
+                    return null;
+                }
+                localStorage.setItem('token', `Bearer ${token}`);
+                navigate('/', {replace: true});
+                window.location.reload();
+            }
+            fetchData();
+        } catch (error) {
+            console.error('Ошибка:', error);
+            setMessage('Неверный логин или пароль');
+            setOpen(true);
+        }
     };
+
 
     return (
         <Container component="main" maxWidth="xs">
@@ -84,6 +115,11 @@ export default function SignIn() {
 
                 </Box>
             </Box>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <MuiAlert onClose={handleClose} severity="error" sx={{width: '100%'}}>
+                    {message}
+                </MuiAlert>
+            </Snackbar>
             <Copyright sx={{mt: 8, mb: 4}}/>
         </Container>
     );
