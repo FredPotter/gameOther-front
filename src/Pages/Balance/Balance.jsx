@@ -6,12 +6,14 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
+import UserService from "../../service/UserService";
 
 export const OpenModalContext = createContext();
 
 const Balance = forwardRef(({callback}, ref) => {
     const [value, setValue] = React.useState('');
     const [open, setOpen] = React.useState(false);
+    const userService = new UserService();
 
     const handleChange = (event) => {
         setValue(event.target.value);
@@ -19,9 +21,17 @@ const Balance = forwardRef(({callback}, ref) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        callback();
-        // Здесь вы можете обработать пополнение баланса
-        console.log(`Баланс пополнен на сумму: ${value}`);
+        const fetchBalance = async () => {
+            if (localStorage.getItem('token')) { // Проверьте наличие токена
+                try {
+                    const resp = await userService.changeUserBalance({amount: value}); // Получите баланс
+                    callback(resp.balance);
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
+            }
+        }
+        fetchBalance();
         handleClose(); // Закрыть модальное окно после отправки формы
     };
 

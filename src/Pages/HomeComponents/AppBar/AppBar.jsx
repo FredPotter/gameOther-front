@@ -12,8 +12,11 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import logo from '../../../resources/images/logo.png';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import Balance from "../../Balance/Balance";
+import UserService from "../../../service/UserService";
+import {Badge} from "@mui/material";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const pages = ['Games', 'Balance', 'New offer'];
 const settings = ['Account', 'Login', 'Logout'];
@@ -21,12 +24,32 @@ const settings = ['Account', 'Login', 'Logout'];
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-
     const balanceRef = React.useRef();
+    const [balance, setBalance] = React.useState(0); // Создайте состояние для баланса
+    const userService = new UserService(); // Создайте экземпляр UserService
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        const fetchBalance = async () => {
+            if (localStorage.getItem('token')) { // Проверьте наличие токена
+                try {
+                    const resp = await userService.getUserBalance(); // Получите баланс
+                    setBalance(resp.balance); // Установите баланс в состояние
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
+            }
+        }
+        fetchBalance();
+    }, [balanceRef.current]);
 
     const handleOpenBalance = () => {
         balanceRef.current.handleClickOpen();
     }
+
+    const handleCartClick = () => {
+        navigate('/Purchases', {replace: true});
+    };
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -118,9 +141,14 @@ function ResponsiveAppBar() {
                                     </Link>)
                             ))}
                         </Box>
-
+                        <Typography sx={{marginRight: 2}}>{balance} р.</Typography>
                         <Box sx={{flexGrow: 0}}>
                             <Tooltip title="Open settings">
+                                <IconButton onClick={handleCartClick} sx={{marginRight: 2}}>
+                                    <Badge color="error">
+                                        <ShoppingCartIcon sx={{ color: 'white' }}/>
+                                    </Badge>
+                                </IconButton>
                                 <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
                                     <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
                                 </IconButton>
@@ -151,7 +179,7 @@ function ResponsiveAppBar() {
                             </Menu>
                         </Box>
                     </Toolbar>
-                    <Balance ref={balanceRef} callback={() => console.log('Balance modal')}/>
+                    <Balance ref={balanceRef} callback={setBalance}/>
                 </Container>
             </AppBar>
     );

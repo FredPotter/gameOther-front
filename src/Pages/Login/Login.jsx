@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { jwtDecode } from 'jwt-decode';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -51,6 +52,8 @@ export default function SignIn() {
                     return null;
                 }
                 localStorage.setItem('token', `Bearer ${token}`);
+                const decoded = jwtDecode(token, {payload: true});
+                localStorage.setItem('userId', `${decoded.id}`);
                 navigate('/', {replace: true});
                 window.location.reload();
             }

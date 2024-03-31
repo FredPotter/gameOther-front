@@ -38,12 +38,24 @@ class UserService {
         return response.json();
     }
 
-    async getUserInfo() {
-        const response = await fetch(`${this.apiUrl}/user/me`, {
+    async getUserBalance() {
+        const response = await fetch(`${this.apiUrl}/api/payment/balance`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
             }
+        });
+        return response.json();
+    }
+    async changeUserBalance(body) {
+        const response = await fetch(`${this.apiUrl}/api/payment/balance`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            },
+            body: JSON.stringify(body)
         });
         return response.json();
     }
