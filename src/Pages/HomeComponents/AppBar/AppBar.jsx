@@ -20,8 +20,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import {jwtDecode} from "jwt-decode";
 
 const pages = ['Games', 'Balance', 'New offer'];
-const settings = [`${jwtDecode(localStorage.getItem('token')).sub}`, 'Login', 'Logout'];
-
+const settings = [localStorage.getItem('token') ? `${jwtDecode(localStorage.getItem('token')).sub}` : 'anon', 'Login', 'Logout'];
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -144,7 +143,7 @@ function ResponsiveAppBar() {
                         </Box>
                         <Typography sx={{marginRight: 2}}>{balance} р.</Typography>
                         <Box sx={{flexGrow: 0}}>
-                        <Tooltip title={`${jwtDecode(localStorage.getItem('token')).sub}`}>
+                        <Tooltip title={localStorage.getItem('token') ? `${jwtDecode(localStorage.getItem('token')).sub}` : 'anon'}>
                                 <IconButton onClick={handleCartClick} sx={{marginRight: 2}}>
                                     <Badge color="error">
                                         <ShoppingCartIcon sx={{ color: 'white' }}/>

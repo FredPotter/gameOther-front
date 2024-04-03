@@ -34,7 +34,7 @@ export default function SignUp() {
     const [countryCode, setCountryCode] = React.useState('7');
     const [countries, setCountries] = React.useState([]);
     const [selectedCountry, setSelectedCountry] = React.useState('');
-    const [confirmationCode, setConfirmationCode] = React.useState('-1');
+    const [confirmationCode, setConfirmationCode] = React.useState('');
     const [isConfirmationVisible, setIsConfirmationVisible] = React.useState(false);
     const navigate = useNavigate();
     const userService = new UserService();
@@ -49,7 +49,7 @@ export default function SignUp() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        if (confirmationCode === '-1') {
+        if (confirmationCode === '') {
             const preReg = async () => {
                 const resp = await userService.preRegistration({username: data.get('username'),
                     countryName: countries.at(selectedCountry-1).name, login: data.get('telephone'),
