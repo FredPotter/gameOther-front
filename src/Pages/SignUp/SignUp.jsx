@@ -9,6 +9,13 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import CountryService from '../../service/CountryService';
+import UserService from '../../service/UserService';
+import {useNavigate} from "react-router-dom";
 
 function Copyright(props) {
     return (
@@ -24,13 +31,67 @@ function Copyright(props) {
 }
 
 export default function SignUp() {
+    const [countryCode, setCountryCode] = React.useState('7');
+    const [countries, setCountries] = React.useState([]);
+    const [selectedCountry, setSelectedCountry] = React.useState('');
+    const [confirmationCode, setConfirmationCode] = React.useState('-1');
+    const [isConfirmationVisible, setIsConfirmationVisible] = React.useState(false);
+    const navigate = useNavigate();
+    const userService = new UserService();
+
+    React.useEffect(() => {
+        const countryService = new CountryService();
+        countryService.getCountries().then((result) => {
+            setCountries(result);
+        });
+    }, []);
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        if (confirmationCode === '-1') {
+            const preReg = async () => {
+                const resp = await userService.preRegistration({username: data.get('username'),
+                    countryName: countries.at(selectedCountry-1).name, login: data.get('telephone'),
+                    password: data.get('password'), telephoneRegion: countryCode})
+                if (resp.success) {
+                    setIsConfirmationVisible(true);
+                } else {
+                    throw new Error(resp.message);
+                }
+            }
+            try {
+                preReg();
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка регистрации, проверьте правильность введенных данных');
+            }
+        } else {
+            const reg = async () => {
+                const resp = await userService.registration({username: data.get('username'),
+                    countryName: countries.at(selectedCountry-1).name, login: data.get('telephone'),
+                    password: data.get('password'), telephoneRegion: countryCode}, confirmationCode)
+                if (resp.token) {
+                    alert('Регистрация прошла успешно!');
+                    navigate('/Login', {replace: true});
+                } else {
+                    throw new Error(resp.message);
+                }
+            }
+            try {
+                reg().then(r => console.log(r));
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка регистрации, проверьте правильность введенных данных');
+            }
+        }
         console.log({
             telephone: data.get('telephone'),
             username: data.get('username'),
             password: data.get('password'),
+            countryCode: countryCode,
+            country: countries.at(selectedCountry-1).name,
+            confirmationCode: confirmationCode
         });
     };
 
@@ -75,13 +136,46 @@ export default function SignUp() {
                             />
                         </Grid>
                         <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <InputLabel id="country-code-label">Country Code</InputLabel>
+                                <Select
+                                    labelId="country-code-label"
+                                    id="country-code"
+                                    value={countryCode}
+                                    label="Country Code"
+                                    onChange={(event) => setCountryCode(event.target.value)}
+                                >
+                                    <MenuItem value={'7'}>+7</MenuItem>
+                                    <MenuItem value={'1'}>+1</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
                             <TextField
                                 required
                                 fullWidth
                                 id="telephone"
-                                label="Telephone Number"
+                                label="telephone with country code"
                                 name="telephone"
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <InputLabel id="country-label">Country</InputLabel>
+                                <Select
+                                    labelId="country-label"
+                                    id="country"
+                                    value={selectedCountry}
+                                    label="Country"
+                                    onChange={(event) => setSelectedCountry(event.target.value)}
+                                >
+                                    {countries.map((country) => (
+                                        <MenuItem key={country.id} value={country.id}>
+                                            {country.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -104,6 +198,17 @@ export default function SignUp() {
                             />
                         </Grid>
                     </Grid>
+                    {isConfirmationVisible && (
+                        <TextField
+                            required
+                            fullWidth
+                            id="confirmation-code"
+                            label="Confirmation Code"
+                            value={confirmationCode}
+                            onChange={(event) => setConfirmationCode(event.target.value)}
+                            sx={{mt: 2}}
+                        />
+                    )}
                     <Button
                         type="submit"
                         fullWidth
@@ -114,7 +219,7 @@ export default function SignUp() {
                     </Button>
                     <Grid container justifyContent="flex-start">
                         <Grid item>
-                            <Link href="#" variant="body2">
+                            <Link href="/Login" variant="body2">
                                 Already have an account? Sign in
                             </Link>
                         </Grid>

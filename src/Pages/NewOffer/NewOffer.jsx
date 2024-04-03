@@ -13,6 +13,7 @@ function NewOffer() {
         gameName: '',
         categoryName: '',
         pricePerLot: '',
+        quantity: '',
         quantityGoodsInLot: '',
         description: '',
         obtainMethod: '',
@@ -60,8 +61,8 @@ function NewOffer() {
     return (
         <div>
             <AppBar/>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh'}}>
-                <Card sx={{width: 700, height: 700}}>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh'}}>
+                <Card sx={{width: 700, height: 800}}>
                     <CardContent>
                         <form onSubmit={handleClickSubmit}>
                             <Stack spacing={2}>
@@ -83,6 +84,9 @@ function NewOffer() {
                                     </Select>
                                 </FormControl>
                                 <TextField name="pricePerLot" label="Price Per Lot" value={form.pricePerLot}
+                                           onChange={handleChange}/>
+                                <TextField name="quantity" label="Quantity"
+                                           value={form.quantity}
                                            onChange={handleChange}/>
                                 <TextField name="quantityGoodsInLot" label="Quantity Goods In Lot"
                                            value={form.quantityGoodsInLot}

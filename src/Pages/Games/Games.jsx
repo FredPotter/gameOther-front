@@ -5,11 +5,16 @@ import AppBar from "../HomeComponents/AppBar/AppBar";
 import {useEffect} from "react";
 import GameService from "../../service/GameService";
 import GameCard from "./GameCard";
+import {useNavigate} from "react-router-dom";
 
 export default function Games() {
     const gameService = new GameService()
     const [games, setGames] = React.useState([]);
+    const navigate = useNavigate();
     useEffect(() => {
+        if (localStorage.getItem('token') === null) {
+            navigate('/Login', {replace: true});
+        }
         const fetchData = async () => {
             try {
                 const resp = await gameService.getGames();

@@ -5,8 +5,9 @@ class UserService {
         this.apiUrl = config.apiUrl;
     }
 
-    async createUser(user) {
-        const response = await fetch(`${this.apiUrl}/user/`, {
+
+    async preRegistration(user) {
+        const response = await fetch(`${this.apiUrl}/auth/pre-register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -16,9 +17,12 @@ class UserService {
         return response.json();
     }
 
-    async editUser(user) {
-        const response = await fetch(`${this.apiUrl}/user/`, {
-            method: 'PUT',
+    async registration(user, code) {
+        const params = new URLSearchParams({
+            code: code,
+        });
+        const response = await fetch(`${this.apiUrl}/auth/register?${params.toString()}`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },

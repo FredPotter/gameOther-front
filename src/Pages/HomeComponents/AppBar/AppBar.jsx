@@ -17,9 +17,10 @@ import Balance from "../../Balance/Balance";
 import UserService from "../../../service/UserService";
 import {Badge} from "@mui/material";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import {jwtDecode} from "jwt-decode";
 
 const pages = ['Games', 'Balance', 'New offer'];
-const settings = ['Account', 'Login', 'Logout'];
+const settings = [`${jwtDecode(localStorage.getItem('token')).sub}`, 'Login', 'Logout'];
 
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -70,7 +71,7 @@ function ResponsiveAppBar() {
             <AppBar position="static">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <Link to={'/Main'} style={{color: 'inherit', textDecoration: 'none'}}>
+                        <Link to={'/Games'} style={{color: 'inherit', textDecoration: 'none'}}>
                             <IconButton size="small">
                                 <img src={logo} alt="My Icon"
                                      style={{width: "156px", height: "auto", marginRight: 10}}/>
@@ -143,7 +144,7 @@ function ResponsiveAppBar() {
                         </Box>
                         <Typography sx={{marginRight: 2}}>{balance} р.</Typography>
                         <Box sx={{flexGrow: 0}}>
-                            <Tooltip title="Open settings">
+                        <Tooltip title={`${jwtDecode(localStorage.getItem('token')).sub}`}>
                                 <IconButton onClick={handleCartClick} sx={{marginRight: 2}}>
                                     <Badge color="error">
                                         <ShoppingCartIcon sx={{ color: 'white' }}/>
