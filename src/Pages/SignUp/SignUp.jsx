@@ -32,6 +32,8 @@ function Copyright(props) {
 
 export default function SignUp() {
     const [countryCode, setCountryCode] = React.useState('7');
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
     const [countries, setCountries] = React.useState([]);
     const [selectedCountry, setSelectedCountry] = React.useState('');
     const [confirmationCode, setConfirmationCode] = React.useState('');
@@ -137,8 +139,9 @@ export default function SignUp() {
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
-                                <InputLabel id="country-code-label">Country Code</InputLabel>
+                                <InputLabel id="country-code-label">Country Code *</InputLabel>
                                 <Select
+                                    required
                                     labelId="country-code-label"
                                     id="country-code"
                                     value={countryCode}
@@ -161,8 +164,9 @@ export default function SignUp() {
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
-                                <InputLabel id="country-label">Country</InputLabel>
+                                <InputLabel id="country-label">Country *</InputLabel>
                                 <Select
+                                    required
                                     labelId="country-label"
                                     id="country"
                                     value={selectedCountry}
@@ -184,6 +188,9 @@ export default function SignUp() {
                                 id="username"
                                 label="Username"
                                 name="username"
+                                value={username}
+                                onChange={(event) => setUsername(event.target.value)}
+                                helperText={username.length < 3 ? "Это поле ограничено 3 знаками" : ""}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -195,6 +202,9 @@ export default function SignUp() {
                                 type="password"
                                 id="password"
                                 autoComplete="new-password"
+                                value={password}
+                                onChange={(event) => setPassword(event.target.value)}
+                                helperText={password.length < 3 ? "Это поле ограничено 3 знаками" : ""}
                             />
                         </Grid>
                     </Grid>
