@@ -29,7 +29,7 @@ export default function OfferCard({ offer }) {
     };
 
     return (
-        <Card sx={{ width: 300, height: 300 }}>
+        <Card sx={{ width: 300, height: 'auto' }}>
             <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
                     <Typography variant="h5" component="div">

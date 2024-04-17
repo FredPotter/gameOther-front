@@ -1,7 +1,5 @@
 import {Navigate, Route, Routes} from 'react-router-dom';
 import Login from './Pages/Login/Login';
-// import Logout from './Pages/Logout/Logout'; // Предполагается, что вы создали этот компонент
-// import Account from './Pages/Account/Account'; // Предполагается, что вы создали этот компонент
 import theme from "./Pages/HomeComponents/Theme/Theme";
 import {ThemeProvider} from '@mui/material/styles';
 import SignUp from "./Pages/SignUp/SignUp";
@@ -24,7 +22,6 @@ function App() {
                     <Route path="/lots/:id" element={<Lots/>}/>
                     <Route path="/lots/offer" element={<Offer/>}/>
                     <Route path="/Purchases" element={<Purchases/>}/>
-                    {/*<Route path="/Account" element={<Account/>}/>*/}
                     <Route path="/Games" element={<Games/>}/>
                     <Route path="/New offer" element={<NewOffer/>}/>
                 </Routes>

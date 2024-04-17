@@ -68,7 +68,7 @@ function PurchaseTable({purchases}) {
                                     'Отменена'
                                 ) : purchase.buyerStatus === 'CLOSED' && purchase.sellerStatus === 'CLOSED' ? (
                                     'Подтверждена'
-                                ) : purchase.sellerStatus === 'WAITING' ? (
+                                ) : purchase.sellerStatus === 'WAITING' && purchase.buyerStatus === 'CLOSED' ? (
                                     'Ожидание продавца'
                                 ) : (
                                     <>
@@ -113,7 +113,7 @@ function PurchaseTable({purchases}) {
                                     'Отменена'
                                 ) : purchase.buyerStatus === 'CLOSED' && purchase.sellerStatus === 'CLOSED' ? (
                                     'Подтверждена'
-                                ) : purchase.buyerStatus === 'WAITING' ? (
+                                ) : purchase.buyerStatus === 'WAITING' && purchase.sellerStatus === 'CLOSED' ? (
                                     'Ожидание покупателя'
                                 ) : (
                                     <>

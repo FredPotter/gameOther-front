@@ -61,7 +61,7 @@ function NewOffer() {
     return (
         <div>
             <AppBar/>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh'}}>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '125vh'}}>
                 <Card sx={{width: 700, height: 800}}>
                     <CardContent>
                         <form onSubmit={handleClickSubmit}>
