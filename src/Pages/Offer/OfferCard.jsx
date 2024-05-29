@@ -9,7 +9,11 @@ export default function OfferCard({ offer }) {
     const offerService = new OfferService();
     const navigate = useNavigate();
     const handleCountChange = (event) => {
-        setCount(event.target.value);
+        let value = event.target.value;
+        if (value < 1) {
+            value = 1;
+        }
+        setCount(value);
     };
     const handleBuyClick = async () => {
         try {

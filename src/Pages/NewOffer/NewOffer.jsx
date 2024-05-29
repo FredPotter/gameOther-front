@@ -33,9 +33,20 @@ function NewOffer() {
     }, []);
 
     const handleChange = (event) => {
+        let value = event.target.value;
+        if (event.target.name === 'pricePerLot' || event.target.name === 'quantity' || event.target.name === 'quantityGoodsInLot') {
+            if (value <= 0) {
+                value = 1;
+            }
+        }
+        if (event.target.name === 'vipStatusDays') {
+            if (value < 0) {
+                value = 0;
+            }
+        }
         setForm({
             ...form,
-            [event.target.name]: event.target.value,
+            [event.target.name]: value,
         });
     };
 
